@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Purchase Request Pending Review</title>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f7fb; color: #333; }
+        .container { max-width: 680px; margin: 0 auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 18px 60px rgba(13,34,79,0.12); }
+        .header { background-color: #002f6c; padding: 28px 32px; text-align: center; color: #fff; }
+        .header h1 { margin: 0; font-size: 28px; letter-spacing: 0.5px; }
+        .content { padding: 32px; line-height: 1.7; }
+        .content h2 { color: #002f6c; font-size: 24px; margin-top: 0; }
+        .content p { font-size: 16px; margin: 16px 0; }
+        .details { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        .details th, .details td { padding: 14px 16px; border: 1px solid #e2e8f0; }
+        .details th { background-color: #f4f7fb; text-align: left; color: #1f2937; }
+        .note { background-color: #eef2ff; border-left: 4px solid #4338ca; padding: 18px; border-radius: 8px; margin: 20px 0; }
+        .footer { background-color: #f4f7fb; padding: 24px 32px; color: #6b7280; font-size: 13px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New Purchase Request</h1>
+        </div>
+        <div class="content">
+            <h2>Hi {{managerName}},</h2>
+            <p>A new purchase request has been submitted and awaits your approval.</p>
+            <table class="details">
+                <tr><th>Request #</th><td>{{requestId}}</td></tr>
+                <tr><th>User</th><td>{{userName}}</td></tr>
+                <tr><th>Product</th><td>{{productName}}</td></tr>
+                <tr><th>Quantity</th><td>{{quantity}}</td></tr>
+                <tr><th>Total Price</th><td>{{totalPrice}}</td></tr>
+                <tr><th>Department</th><td>{{departmentName}}</td></tr>
+                <tr><th>Status</th><td>{{status}}</td></tr>
+            </table>
+            <div class="note">
+                <p>Please review this request and approve or reject it from the manager portal.</p>
+            </div>
+            <p>Thanks,<br>Enterprise Procurement System</p>
+        </div>
+        <div class="footer">
+            Enterprise Procurement System<br>
+            123 Procurement Avenue, Mumbai, India<br>
+            © 2026 Enterprise Procurement System
+        </div>
+    </div>
+</body>
+</html>

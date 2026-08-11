@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Enterprise Procurement System Tests" parallel="false">
+    <test name="Authentication Service Tests">
+        <classes>
+            <class name="com.eps.service.impl.AuthenticationServiceTest"/>
+        </classes>
+    </test>
+    <test name="User Service Tests">
+        <classes>
+            <class name="com.eps.service.impl.UserServiceTest"/>
+        </classes>
+    </test>
+    <test name="Repository Tests">
+        <classes>
+            <class name="com.eps.repository.UserRepositoryTest"/>
+            <class name="com.eps.repository.RoleRepositoryTest"/>
+        </classes>
+    </test>
+</suite>

@@ -1,0 +1,64 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+*.iml
+*.iws
+*.ipr
+
+# Build
+target/
+build/
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# Maven
+.m2/
+dependency-reduced-pom.xml
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+release-pom.xml
+
+# Gradle
+.gradle/
+gradle/
+
+# Spring Boot
+*.log
+application-*.properties
+!application.properties
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Database
+*.db
+*.sqlite
+*.h2.db
+
+# OS
+Thumbs.db
+.thumbs.db
+
+# Node (if used)
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Misc
+.classpath
+.project
+.settings/
+bin/

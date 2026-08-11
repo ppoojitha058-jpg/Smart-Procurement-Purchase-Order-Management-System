@@ -1,0 +1,16 @@
+package com.eps.exception;
+
+/**
+ * Custom Exception - Email Already Exists
+ */
+public class EmailAlreadyExistsException extends RuntimeException {
+    
+    public EmailAlreadyExistsException(String message) {
+        super(message);
+    }
+    
+    public EmailAlreadyExistsException(String message, Throwable cause) {
+        super(message, cause);
+    }
+    
+}

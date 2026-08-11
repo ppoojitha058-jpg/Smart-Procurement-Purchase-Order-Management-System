@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Enterprise Procurement System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+        }
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .navbar {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        .sidebar {
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            min-height: calc(100vh - 56px);
+            padding: 20px 0;
+        }
+        .sidebar .nav-link {
+            color: #333;
+            padding: 12px 20px;
+            border-left: 3px solid transparent;
+            transition: all 0.3s;
+        }
+        .sidebar .nav-link:hover {
+            background-color: #f0f0f0;
+            border-left-color: var(--primary-color);
+        }
+        .sidebar .nav-link.active {
+            background-color: #e8e8ff;
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+        .main-content {
+            padding: 30px;
+        }
+        .card {
+            border: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            padding: 20px;
+        }
+        .stat-card {
+            text-align: center;
+            padding: 20px;
+        }
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        .stat-label {
+            color: #666;
+            margin-top: 10px;
+        }
+        .logout-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .logout-btn:hover {
+            background: #c82333;
+            color: white;
+            text-decoration: none;
+        }
+        .welcome-message {
+            color: #333;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container-fluid">
+            <span class="navbar-brand"><i class="bi bi-building"></i> EPS Admin</span>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <span class="nav-link" id="userGreeting"></span>
+                    </li>
+                    <li class="nav-item">
+                        <button class="logout-btn" onclick="logout()">Logout</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-2 sidebar">
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-people"></i> Manage Users</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-file-text"></i> Reports</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"><i class="bi bi-gear"></i> Settings</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Main Content -->
+            <main class="col-md-10 main-content">
+                <div class="welcome-message">
+                    <h1>Welcome to Admin Dashboard</h1>
+                    <p id="systemStatus"></p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="row mb-4" id="statsContainer">
+                    <!-- Stats will be loaded here -->
+                </div>
+
+                <!-- Dashboard Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="bi bi-info-circle"></i> System Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="dashboardContent">
+                            <p>Loading dashboard information...</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function loadDashboard() {
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (!user) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // Check if user is admin
+            if (user.role !== 'ADMIN') {
+                window.location.href = 'user-dashboard.html';
+                return;
+            }
+
+            // Set greeting
+            document.getElementById('userGreeting').textContent = `Welcome, ${user.fullName}`;
+
+            // Fetch dashboard data
+            fetch('/admin/dashboard')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const dashboardData = data.data;
+                        
+                        // Display stats
+                        const statsHtml = `
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body stat-card">
+                                        <div class="stat-number">${dashboardData.totalUsers || 0}</div>
+                                        <div class="stat-label">Total Users</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body stat-card">
+                                        <div class="stat-number">${dashboardData.totalAdmins || 0}</div>
+                                        <div class="stat-label">Total Admins</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card">
+                                    <div class="card-body stat-card">
+                                        <div class="stat-number">${dashboardData.systemStatus}</div>
+                                        <div class="stat-label">System Status</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        
+                        document.getElementById('statsContainer').innerHTML = statsHtml;
+                        document.getElementById('systemStatus').textContent = `System is ${dashboardData.systemStatus.toLowerCase()}`;
+                        
+                        // Display dashboard content
+                        const contentHtml = `
+                            <table class="table">
+                                <tr>
+                                    <td><strong>Dashboard Name:</strong></td>
+                                    <td>${dashboardData.dashboardName}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Users:</strong></td>
+                                    <td>${dashboardData.totalUsers}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Total Admins:</strong></td>
+                                    <td>${dashboardData.totalAdmins}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>System Status:</strong></td>
+                                    <td><span class="badge bg-success">${dashboardData.systemStatus}</span></td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Last Updated:</strong></td>
+                                    <td>${new Date(dashboardData.lastUpdated).toLocaleString()}</td>
+                                </tr>
+                            </table>
+                        `;
+                        
+                        document.getElementById('dashboardContent').innerHTML = contentHtml;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('dashboardContent').innerHTML = '<p class="text-danger">Error loading dashboard data</p>';
+                });
+        }
+
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'login.html';
+        }
+
+        // Load dashboard on page load
+        window.addEventListener('load', loadDashboard);
+    </script>
+</body>
+</html>
