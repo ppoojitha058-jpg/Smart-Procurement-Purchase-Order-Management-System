@@ -1,151 +1,614 @@
 {
   "info": {
-    "name": "Enterprise Procurement System API",
-    "description": "Complete API Collection for Enterprise Procurement System",
+    "name": "Enterprise Procurement System - Complete Production API Suite",
+    "description": "Production Postman API collection for Enterprise Procurement System. Covers end-to-end lifecycle: Auth, Employee Requisitions, Manager Approvals, Procurement RFQs & POs, Supplier Quotations & Invoicing, Receiving bay GRN, Finance 3-Way Match & Payments, Dynamic CSV streaming, and Security Tests.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Authentication",
+      "name": "1. Authentication",
       "item": [
         {
-          "name": "Register User",
+          "name": "Login - Admin",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"admin_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
+            "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"John Doe\",\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123\",\n  \"phone\": \"1234567890\",\n  \"address\": \"123 Main Street\"\n}"
+              "raw": "{\n  \"email\": \"admin@eps.com\",\n  \"password\": \"Admin@123\"\n}"
             },
-            "url": {
-              "raw": "http://localhost:8080/api/auth/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "auth", "register"]
-            },
-            "description": "Register a new USER account"
-          },
-          "response": []
+            "url": "{{base_url}}/api/auth/login"
+          }
         },
         {
-          "name": "Register Admin",
+          "name": "Login - Employee",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"employee_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
-            "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
-            ],
+            "header": [{"key": "Content-Type", "value": "application/json"}],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"fullName\": \"Admin User\",\n  \"email\": \"admin@example.com\",\n  \"password\": \"AdminPass123\",\n  \"phone\": \"9876543210\",\n  \"address\": \"Admin Office\"\n}"
+              "raw": "{\n  \"email\": \"employee@eps.com\",\n  \"password\": \"User@123\"\n}"
             },
-            "url": {
-              "raw": "http://localhost:8080/api/auth/admin/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "auth", "admin", "register"]
-            },
-            "description": "Register a new ADMIN account (only ADMIN can create another ADMIN)"
-          },
-          "response": []
+            "url": "{{base_url}}/api/auth/login"
+          }
         },
         {
-          "name": "User Login",
+          "name": "Login - Manager",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"manager_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"manager@eps.com\",\n  \"password\": \"Manager@123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Procurement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"procurement_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"procurement@eps.com\",\n  \"password\": \"Procurement@123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Supplier",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"supplier_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"supplier@eps.com\",\n  \"password\": \"Supplier@123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Receiving",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"receiving_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"receiving@eps.com\",\n  \"password\": \"Receiving@123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login - Finance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Status code is 200\", function () { pm.response.to.have.status(200); });",
+                  "if(jsonData.data && jsonData.data.token) { pm.collectionVariables.set(\"finance_token\", jsonData.data.token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"finance@eps.com\",\n  \"password\": \"Finance@123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Employee Requisitions",
+      "item": [
+        {
+          "name": "Get Catalog Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{base_url}}/api/products"
+          }
+        },
+        {
+          "name": "Create Purchase Request",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Created successfully\", function () { pm.response.to.have.status(201); });",
+                  "if(jsonData.data && jsonData.data.requestId) { pm.collectionVariables.set(\"request_id\", jsonData.data.requestId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
           "request": {
             "method": "POST",
             "header": [
-              {
-                "key": "Content-Type",
-                "value": "application/json",
-                "type": "text"
-              }
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{employee_token}}"}
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"john@example.com\",\n  \"password\": \"Password123\"\n}"
+              "raw": "{\n  \"userId\": 2,\n  \"productId\": 1,\n  \"departmentId\": 1,\n  \"quantity\": 2\n}"
             },
-            "url": {
-              "raw": "http://localhost:8080/api/auth/login",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["api", "auth", "login"]
-            },
-            "description": "Login with email and password"
-          },
-          "response": []
-        }
-      ],
-      "description": "Authentication endpoints for registration and login"
-    },
-    {
-      "name": "Admin Dashboard",
-      "item": [
+            "url": "{{base_url}}/api/purchase-requests"
+          }
+        },
         {
-          "name": "Get Admin Dashboard",
+          "name": "Get My Purchase Requests",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer YOUR_TOKEN",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8080/admin/dashboard",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["admin", "dashboard"]
-            },
-            "description": "Get admin dashboard information (ADMIN role required)"
-          },
-          "response": []
-        }
-      ],
-      "description": "Admin-specific endpoints"
-    },
-    {
-      "name": "User Dashboard",
-      "item": [
+            "header": [{"key": "Authorization", "value": "Bearer {{employee_token}}"}],
+            "url": "{{base_url}}/api/users/my-requests"
+          }
+        },
         {
-          "name": "Get User Dashboard",
+          "name": "Download My Requests CSV",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer YOUR_TOKEN",
-                "type": "text",
-                "disabled": true
-              }
-            ],
-            "url": {
-              "raw": "http://localhost:8080/user/dashboard",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "8080",
-              "path": ["user", "dashboard"]
-            },
-            "description": "Get user dashboard information (USER role required)"
-          },
-          "response": []
+            "header": [{"key": "Authorization", "value": "Bearer {{employee_token}}"}],
+            "url": "{{base_url}}/api/reports/csv/my-requests?email=employee@eps.com"
+          }
         }
-      ],
-      "description": "User-specific endpoints"
+      ]
+    },
+    {
+      "name": "3. Manager Approvals",
+      "item": [
+        {
+          "name": "Get Pending Requests",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{manager_token}}"}],
+            "url": "{{base_url}}/api/manager/pending-requests"
+          }
+        },
+        {
+          "name": "Approve Purchase Request",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{manager_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"remarks\": \"Approved for departmental operations upgrade.\"\n}"
+            },
+            "url": "{{base_url}}/api/manager/requests/{{request_id}}/approve"
+          }
+        },
+        {
+          "name": "Download Department Requests CSV",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{manager_token}}"}],
+            "url": "{{base_url}}/api/reports/csv/department-requests?departmentId=1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Procurement (RFQ & PO)",
+      "item": [
+        {
+          "name": "List Approved Requests",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{procurement_token}}"}],
+            "url": "{{base_url}}/api/procurement/approved-requests"
+          }
+        },
+        {
+          "name": "Create RFQ",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.rfqId) { pm.collectionVariables.set(\"rfq_id\", jsonData.rfqId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{procurement_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"purchaseRequestId\": {{request_id}},\n  \"title\": \"Enterprise Laptop Hardware RFQ\",\n  \"description\": \"Requesting best competitive pricing with 3-year warranty.\"\n}"
+            },
+            "url": "{{base_url}}/api/procurement/rfq"
+          }
+        },
+        {
+          "name": "List RFQs",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{procurement_token}}"}],
+            "url": "{{base_url}}/api/procurement/rfq"
+          }
+        },
+        {
+          "name": "View Quotes for RFQ",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{procurement_token}}"}],
+            "url": "{{base_url}}/api/procurement/rfq/{{rfq_id}}/quotes"
+          }
+        },
+        {
+          "name": "Select Quote & Issue Purchase Order",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.orderId) { pm.collectionVariables.set(\"order_id\", jsonData.orderId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Authorization", "value": "Bearer {{procurement_token}}"}],
+            "url": "{{base_url}}/api/procurement/rfq/{{rfq_id}}/select-quote/{{quote_id}}"
+          }
+        },
+        {
+          "name": "List Purchase Orders",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{procurement_token}}"}],
+            "url": "{{base_url}}/api/procurement/orders"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Supplier Portal",
+      "item": [
+        {
+          "name": "View Open RFQs",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{supplier_token}}"}],
+            "url": "{{base_url}}/api/supplier/rfqs"
+          }
+        },
+        {
+          "name": "Submit Quotation",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.quotationId) { pm.collectionVariables.set(\"quote_id\", jsonData.quotationId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{supplier_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"supplierId\": 1,\n  \"quotedPrice\": 2400.00,\n  \"deliveryDays\": 3,\n  \"comments\": \"Fast courier delivery with premium support\"\n}"
+            },
+            "url": "{{base_url}}/api/supplier/rfq/{{rfq_id}}/quote"
+          }
+        },
+        {
+          "name": "Supplier Accept PO",
+          "request": {
+            "method": "PUT",
+            "header": [{"key": "Authorization", "value": "Bearer {{supplier_token}}"}],
+            "url": "{{base_url}}/api/supplier/orders/{{order_id}}/accept"
+          }
+        },
+        {
+          "name": "Supplier Dispatch & Update Shipment",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{supplier_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"trackingNumber\": \"TRK-FEDEX-998822\",\n  \"shipmentDetails\": \"Shipped via FedEx Priority. ETA: Tomorrow.\"\n}"
+            },
+            "url": "{{base_url}}/api/supplier/orders/{{order_id}}/shipment"
+          }
+        },
+        {
+          "name": "Supplier Submit Invoice",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if(jsonData.invoiceId) { pm.collectionVariables.set(\"invoice_id\", jsonData.invoiceId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{supplier_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"invoiceNumber\": \"INV-EXP-2026-009\",\n  \"amount\": 2400.00,\n  \"notes\": \"Standard 30 days payment terms\"\n}"
+            },
+            "url": "{{base_url}}/api/supplier/orders/{{order_id}}/invoice"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Receiving Bay",
+      "item": [
+        {
+          "name": "Get Orders for Receiving",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{receiving_token}}"}],
+            "url": "{{base_url}}/api/receiving/orders"
+          }
+        },
+        {
+          "name": "Create Goods Receipt Note (GRN)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{receiving_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orderId\": {{order_id}},\n  \"receivedBy\": \"Marcus Vance (Receiving Officer)\",\n  \"quantityReceived\": 2,\n  \"conditionStatus\": \"GOOD\",\n  \"notes\": \"All boxes intact. Quality check passed.\"\n}"
+            },
+            "url": "{{base_url}}/api/receiving/grn"
+          }
+        },
+        {
+          "name": "List All GRNs",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{receiving_token}}"}],
+            "url": "{{base_url}}/api/receiving/grn"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Finance (3-Way Match & Payment)",
+      "item": [
+        {
+          "name": "List Invoices",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{finance_token}}"}],
+            "url": "{{base_url}}/api/finance/invoices"
+          }
+        },
+        {
+          "name": "Perform 3-Way Match Verification",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{finance_token}}"}],
+            "url": "{{base_url}}/api/finance/invoices/{{invoice_id}}/match"
+          }
+        },
+        {
+          "name": "Approve Invoice",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{finance_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"APPROVED\",\n  \"notes\": \"3-Way Match Verified by Finance\"\n}"
+            },
+            "url": "{{base_url}}/api/finance/invoices/{{invoice_id}}/status"
+          }
+        },
+        {
+          "name": "Process Payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{finance_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"paymentMethod\": \"BANK_TRANSFER\",\n  \"transactionReference\": \"TXN-FIN-2026-9021\"\n}"
+            },
+            "url": "{{base_url}}/api/finance/invoices/{{invoice_id}}/payment"
+          }
+        },
+        {
+          "name": "List Payments",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{finance_token}}"}],
+            "url": "{{base_url}}/api/finance/payments"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Admin Management & Reports",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": "{{base_url}}/api/admin/users"
+          }
+        },
+        {
+          "name": "Download All Requests CSV",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": "{{base_url}}/api/reports/csv/all-requests"
+          }
+        },
+        {
+          "name": "Download Purchase Orders CSV",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": "{{base_url}}/api/reports/csv/orders"
+          }
+        },
+        {
+          "name": "Get Audit Logs",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{admin_token}}"}],
+            "url": "{{base_url}}/api/admin/audit-logs"
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Security Negative Tests",
+      "item": [
+        {
+          "name": "Employee Access Admin API (Expect 401/403)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Access Denied (401 or 403)\", function () {",
+                  "    pm.expect([401, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{employee_token}}"}],
+            "url": "{{base_url}}/api/admin/users"
+          }
+        }
+      ]
     }
   ],
   "variable": [
@@ -155,16 +618,64 @@
       "type": "string"
     },
     {
-      "key": "user_token",
-      "value": "",
-      "type": "string",
-      "description": "Store JWT token after login"
-    },
-    {
       "key": "admin_token",
       "value": "",
-      "type": "string",
-      "description": "Store Admin JWT token after login"
+      "type": "string"
+    },
+    {
+      "key": "employee_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "manager_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "procurement_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "supplier_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "receiving_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "finance_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "request_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "rfq_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "quote_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "order_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "invoice_id",
+      "value": "1",
+      "type": "string"
     }
   ]
 }

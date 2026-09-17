@@ -1,0 +1,1375 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Operations Admin Console - EPS</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* Dashboard Layout specific styles */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar-nav {
+                display: none !important;
+            }
+        }
+
+        /* Sidebar Navigation */
+        .sidebar-nav {
+            background: var(--surface);
+            border-right: 1px solid var(--border-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            list-style: none;
+            margin-top: 30px;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .menu-item:hover, .menu-item.active {
+            background: var(--gradient-glow);
+            color: var(--accent-primary);
+        }
+
+        .menu-item i {
+            font-size: 16px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Top Header */
+        .header-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-avatar {
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFFFFF;
+            font-weight: 700;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .profile-role-tag {
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--accent-secondary);
+            background: var(--gradient-glow);
+            padding: 2px 6px;
+            border-radius: 4px;
+            width: fit-content;
+            margin-top: 2px;
+        }
+
+        .btn-logout {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: #FFFFFF;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Main Content container */
+        .main-content-panel {
+            padding: 32px 40px;
+            background-color: var(--bg-primary);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card-premium {
+            background: var(--surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow-main);
+        }
+
+        .stat-card-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-card-number {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .stat-card-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .stat-card-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-secondary);
+            font-size: 18px;
+        }
+
+        /* Tables & Details layout */
+        .glass-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .glass-table th, .glass-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .glass-table th {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .glass-table tbody tr:hover {
+            background: var(--bg-secondary);
+        }
+
+        .badge-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-role {
+            background: var(--gradient-glow);
+            color: var(--accent-primary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .badge-admin {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-secondary);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* Flex filter headers */
+        .admin-action-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        
+        <!-- SIDEBAR -->
+        <aside class="sidebar-nav">
+            <div>
+                <div class="brand-header" style="padding-left: 10px;">
+                    <div class="logo-icon">
+                        <i class="fa-solid fa-screwdriver-wrench" style="color: #FFFFFF; font-size: 18px;"></i>
+                    </div>
+                    <span class="logo-text" style="font-size: 18px;">EPS Operations</span>
+                </div>
+                
+                <ul class="sidebar-menu">
+                    <li>
+                        <div id="menuDashboard" class="menu-item active" onclick="switchView('dashboard')">
+                            <i class="fa-solid fa-chart-line"></i>
+                            <span>Overview Console</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="menuUsers" class="menu-item" onclick="switchView('users')">
+                            <i class="fa-solid fa-users-gear"></i>
+                            <span>User Directory</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="menuSuppliers" class="menu-item" onclick="switchView('suppliers')">
+                            <i class="fa-solid fa-building-user"></i>
+                            <span>Suppliers CRUD</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="menuProducts" class="menu-item" onclick="switchView('products')">
+                            <i class="fa-solid fa-boxes-stacked"></i>
+                            <span>Products CRUD</span>
+                        </div>
+                    </li>
+                    <li>
+                        <div id="menuCategories" class="menu-item" onclick="switchView('categories')">
+                            <i class="fa-solid fa-list-check"></i>
+                            <span>Categories CRUD</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div style="padding: 10px;">
+                <button class="btn-logout" style="width: 100%;" onclick="logout()">
+                    <i class="fa-solid fa-power-off"></i> Logout
+                </button>
+            </div>
+        </aside>
+        
+        <!-- MAIN SECTION -->
+        <div style="display: flex; flex-direction: column; overflow-y: auto; flex-grow: 1;">
+            
+            <!-- HEADER -->
+            <header class="header-panel">
+                <div>
+                    <h3 style="font-size: 20px; font-weight: 700;">EPS Administrator Console</h3>
+                    <p style="font-size: 12px; color: var(--text-secondary);" id="currentDateStr"></p>
+                </div>
+                
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <!-- Notification Bell -->
+                    <div style="position: relative;">
+                        <button class="theme-switch-btn" style="position: static;" onclick="toggleAdminNotificationsModal()" title="View Notifications">
+                            <i class="fa-solid fa-bell"></i>
+                            <span id="adminNotifBadge" style="display: none; position: absolute; top: -6px; right: -6px; background: var(--danger); color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; font-weight: 700; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">0</span>
+                        </button>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button class="theme-switch-btn" style="position: static;" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                        <i id="themeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    
+                    <div class="user-profile-badge">
+                        <div class="profile-avatar">A</div>
+                        <div class="profile-info">
+                            <span style="font-weight: 600; font-size: 14px;" id="adminFullName">Admin User</span>
+                            <span class="profile-role-tag">SYSTEM ADMIN</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            
+            <!-- MAIN CONTENT AREA -->
+            <main class="main-content-panel">
+                
+                <!-- VIEW 1: OVERVIEW -->
+                <div id="viewDashboard" class="view-panel">
+                    
+                    <!-- Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card-premium">
+                            <div class="stat-card-details">
+                                <span class="stat-card-number" id="statUsers">0</span>
+                                <span class="stat-card-label">Registered Accounts</span>
+                            </div>
+                            <div class="stat-card-icon"><i class="fa-solid fa-users"></i></div>
+                        </div>
+                        
+                        <div class="stat-card-premium">
+                            <div class="stat-card-details">
+                                <span class="stat-card-number" id="statSuppliers">0</span>
+                                <span class="stat-card-label">Active Suppliers</span>
+                            </div>
+                            <div class="stat-card-icon" style="color: var(--success);"><i class="fa-solid fa-handshake"></i></div>
+                        </div>
+                        
+                        <div class="stat-card-premium">
+                            <div class="stat-card-details">
+                                <span class="stat-card-number" id="statProducts">0</span>
+                                <span class="stat-card-label">Listed Products</span>
+                            </div>
+                            <div class="stat-card-icon" style="color: var(--accent-primary);"><i class="fa-solid fa-box-open"></i></div>
+                        </div>
+                        
+                        <div class="stat-card-premium">
+                            <div class="stat-card-details">
+                                <span class="stat-card-number" id="statAdmins">0</span>
+                                <span class="stat-card-label">Privileged Admins</span>
+                            </div>
+                            <div class="stat-card-icon" style="color: var(--accent-secondary);"><i class="fa-solid fa-user-shield"></i></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Details panel -->
+                    <div class="glass-panel" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 18px; margin-bottom: 20px;"><i class="fa-solid fa-database" style="color: var(--accent-secondary); margin-right: 8px;"></i> Operations Core Connection</h3>
+                        <div id="dashboardContent">
+                            <div class="skeleton" style="height: 120px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+
+                    <!-- Enterprise CSV Reports Panel -->
+                    <div class="glass-panel" style="margin-bottom: 24px;">
+                        <h3 style="font-size: 18px; margin-bottom: 8px;"><i class="fa-solid fa-file-csv" style="color: var(--accent-primary); margin-right: 8px;"></i> Enterprise Procurement CSV Data Exports</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">Direct, real-time database streamed CSV exports filtered with role-level isolation.</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                            <!-- Admin Exports -->
+                            <div class="glass-panel" style="background: var(--bg-secondary); padding: 16px;">
+                                <h4 style="font-size: 14.5px; font-weight: 700; margin-bottom: 12px; color: var(--accent-primary);"><i class="fa-solid fa-shield-halved"></i> Global Admin Exports</h4>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="btn-action btn-action-primary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadAdminCsv('requests')">
+                                        <i class="fa-solid fa-file-lines" style="width: 20px;"></i>
+                                        <span>All Purchase Requests CSV</span>
+                                    </button>
+                                    <button class="btn-action btn-action-primary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadAdminCsv('orders')">
+                                        <i class="fa-solid fa-box" style="width: 20px;"></i>
+                                        <span>All Purchase Orders CSV</span>
+                                    </button>
+                                    <button class="btn-action btn-action-primary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadAdminCsv('suppliers')">
+                                        <i class="fa-solid fa-handshake" style="width: 20px;"></i>
+                                        <span>Suppliers & Performance CSV</span>
+                                    </button>
+                                    <button class="btn-action btn-action-primary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadAdminCsv('payments')">
+                                        <i class="fa-solid fa-credit-card" style="width: 20px;"></i>
+                                        <span>Finance Payments CSV</span>
+                                    </button>
+                                    <button class="btn-action btn-action-primary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadAdminCsv('tracking')">
+                                        <i class="fa-solid fa-location-crosshairs" style="width: 20px;"></i>
+                                        <span>Order Tracking Telemetry CSV</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Manager & Audit Exports -->
+                            <div class="glass-panel" style="background: var(--bg-secondary); padding: 16px;">
+                                <h4 style="font-size: 14.5px; font-weight: 700; margin-bottom: 12px; color: var(--accent-secondary);"><i class="fa-solid fa-user-check"></i> Manager & Audit Exports</h4>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <button class="btn-action btn-action-secondary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadManagerCsv('requests')">
+                                        <i class="fa-solid fa-building" style="width: 20px;"></i>
+                                        <span>Department Requests CSV</span>
+                                    </button>
+                                    <button class="btn-action btn-action-secondary" style="justify-content: flex-start; padding: 10px 14px;" onclick="downloadManagerCsv('approvals')">
+                                        <i class="fa-solid fa-stamp" style="width: 20px;"></i>
+                                        <span>Department Approvals Audit CSV</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIEW 2: USER DIRECTORY -->
+                <div id="viewUsers" class="view-panel" style="display: none;">
+                    <div class="glass-panel">
+                        <div class="admin-action-header">
+                            <h3 style="font-size: 18px;"><i class="fa-solid fa-users-gear" style="color: var(--accent-secondary); margin-right: 8px;"></i> System User Directory</h3>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="glass-table">
+                                <thead>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Full Name</th>
+                                        <th>Email Address</th>
+                                        <th>Phone</th>
+                                        <th>Sec Role</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                    <tr>
+                                        <td colspan="5" style="text-align: center;">Loading users...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIEW 3: SUPPLIER CRUD -->
+                <div id="viewSuppliers" class="view-panel" style="display: none;">
+                    <div class="glass-panel">
+                        <div class="admin-action-header">
+                            <h3 style="font-size: 18px;"><i class="fa-solid fa-building-user" style="color: var(--accent-secondary); margin-right: 8px;"></i> Supplier Node Control</h3>
+                            <button class="btn-primary-premium" style="width: auto; padding: 10px 20px;" onclick="openSupplierModal()">
+                                <i class="fa-solid fa-plus"></i> Add Supplier
+                            </button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="glass-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Company Name</th>
+                                        <th>Email</th>
+                                        <th>Tax ID/GST</th>
+                                        <th>Status</th>
+                                        <th>Rating</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="suppliersTableBody">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIEW 4: PRODUCT CRUD -->
+                <div id="viewProducts" class="view-panel" style="display: none;">
+                    <div class="glass-panel">
+                        <div class="admin-action-header">
+                            <h3 style="font-size: 18px;"><i class="fa-solid fa-boxes-stacked" style="color: var(--accent-secondary); margin-right: 8px;"></i> Product Catalog Control</h3>
+                            <button class="btn-primary-premium" style="width: auto; padding: 10px 20px;" onclick="openProductModal()">
+                                <i class="fa-solid fa-plus"></i> Add Product
+                            </button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="glass-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Unit Price</th>
+                                        <th>Stock Qty</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productsTableBody">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- VIEW 5: CATEGORY CRUD -->
+                <div id="viewCategories" class="view-panel" style="display: none;">
+                    <div class="glass-panel">
+                        <div class="admin-action-header">
+                            <h3 style="font-size: 18px;"><i class="fa-solid fa-list-check" style="color: var(--accent-secondary); margin-right: 8px;"></i> Category Node Control</h3>
+                            <button class="btn-primary-premium" style="width: auto; padding: 10px 20px;" onclick="openCategoryModal()">
+                                <i class="fa-solid fa-plus"></i> Add Category
+                            </button>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="glass-table">
+                                <thead>
+                                    <tr>
+                                        <th>Category ID</th>
+                                        <th>Category Name</th>
+                                        <th>Description</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="categoriesTableBody">
+                                    <!-- Rendered dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </main>
+        </div>
+    </div>
+    
+    <!-- SUPPLIER FORM MODAL -->
+    <div id="supplierModal" class="modal-overlay" onclick="closeSupplierModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="supplierModalTitle">Add Supplier Profile</h3>
+                <button class="modal-close" onclick="closeSupplierModal()">&times;</button>
+            </div>
+            <form onsubmit="handleSupplierSubmit(event)">
+                <input type="hidden" id="supplierEditId">
+                <div class="form-floating-custom">
+                    <input type="text" id="supName" placeholder=" " required>
+                    <label for="supName">Company Name</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="email" id="supEmail" placeholder=" " required>
+                    <label for="supEmail">Email Address</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="text" id="supPhone" placeholder=" " required>
+                    <label for="supPhone">Phone Number</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="text" id="supGst" placeholder=" " required>
+                    <label for="supGst">Tax ID / GST Number</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="text" id="supAddress" placeholder=" " required>
+                    <label for="supAddress">Postal Address</label>
+                </div>
+                <div class="form-floating-custom">
+                    <select id="supStatus">
+                        <option value="ACTIVE">ACTIVE</option>
+                        <option value="INACTIVE">INACTIVE</option>
+                    </select>
+                    <label for="supStatus">Status</label>
+                </div>
+                
+                <button type="submit" class="btn-primary-premium">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span id="supplierSubmitBtnText">Save Supplier</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- PRODUCT FORM MODAL -->
+    <div id="productModal" class="modal-overlay" onclick="closeProductModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="productModalTitle">Add Product Catalog</h3>
+                <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            </div>
+            <form onsubmit="handleProductSubmit(event)">
+                <input type="hidden" id="productEditId">
+                <div class="form-floating-custom">
+                    <input type="text" id="prodName" placeholder=" " required>
+                    <label for="prodName">Product Name</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="number" step="0.01" id="prodPrice" placeholder=" " required>
+                    <label for="prodPrice">Price Per Unit</label>
+                </div>
+                <div class="form-floating-custom">
+                    <input type="number" id="prodQty" placeholder=" " required>
+                    <label for="prodQty">Stock Quantity</label>
+                </div>
+                <div class="form-floating-custom">
+                    <select id="prodCategory" required></select>
+                    <label for="prodCategory">Category Node</label>
+                </div>
+                <div class="form-floating-custom">
+                    <select id="prodDept" required></select>
+                    <label for="prodDept">Assigned Department</label>
+                </div>
+                <div class="form-floating-custom">
+                    <textarea id="prodDesc" placeholder=" " required></textarea>
+                    <label for="prodDesc">Product Description</label>
+                </div>
+                
+                <button type="submit" class="btn-primary-premium">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span id="productSubmitBtnText">Save Product</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- CATEGORY FORM MODAL -->
+    <div id="categoryModal" class="modal-overlay" onclick="closeCategoryModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 id="categoryModalTitle">Add Category Node</h3>
+                <button class="modal-close" onclick="closeCategoryModal()">&times;</button>
+            </div>
+            <form onsubmit="handleCategorySubmit(event)">
+                <input type="hidden" id="categoryEditId">
+                <div class="form-floating-custom">
+                    <input type="text" id="catName" placeholder=" " required>
+                    <label for="catName">Category Name</label>
+                </div>
+                <div class="form-floating-custom">
+                    <textarea id="catDesc" placeholder=" " required></textarea>
+                    <label for="catDesc">Description</label>
+                </div>
+                
+                <button type="submit" class="btn-primary-premium">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span id="categorySubmitBtnText">Save Category</span>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- ADMIN NOTIFICATIONS MODAL -->
+    <div id="adminNotifModal" class="modal-overlay" onclick="closeAdminNotificationsModal()">
+        <div class="modal-content" onclick="event.stopPropagation()" style="max-width: 520px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-bell" style="color: var(--accent-primary); margin-right: 8px;"></i> Administrator Notifications</h3>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <button class="btn-action btn-action-secondary" style="font-size: 11.5px; padding: 4px 10px;" onclick="markAllAdminNotificationsRead()">Mark All Read</button>
+                    <button class="modal-close" onclick="closeAdminNotificationsModal()">&times;</button>
+                </div>
+            </div>
+            <div id="adminNotifList" style="max-height: 400px; overflow-y: auto; padding: 4px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="text-align: center; padding: 20px; color: var(--text-secondary);">Loading notifications...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST ALERT CONTAINER -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <script>
+        let userData = null;
+        
+        // Theme switcher
+        function toggleTheme() {
+            const htmlTag = document.documentElement;
+            const themeIcon = document.getElementById('themeIcon');
+            const currentTheme = htmlTag.getAttribute('data-theme');
+            
+            if (currentTheme === 'light') {
+                htmlTag.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fa-solid fa-sun';
+                localStorage.setItem('theme', 'dark');
+            } else {
+                htmlTag.setAttribute('data-theme', 'light');
+                themeIcon.className = 'fa-solid fa-moon';
+                localStorage.setItem('theme', 'light');
+            }
+        }
+        
+        // Toast notifications
+        function showToast(type, message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `toast-message ${type}`;
+            const iconMap = { success: 'fa-check-circle', danger: 'fa-exclamation-circle', info: 'fa-circle-info' };
+            toast.innerHTML = `<i class="fa-solid ${iconMap[type] || 'fa-info-circle'}"></i><div style="font-size:13px; font-weight:500;">${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s reverse forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 4500);
+        }
+
+        // Notification Badges & Modal
+        function updateAdminNotifBadge(unreadCount) {
+            const badge = document.getElementById('adminNotifBadge');
+            if (!badge) return;
+            if (unreadCount > 0) {
+                badge.innerText = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = 'flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function toggleAdminNotificationsModal() {
+            const modal = document.getElementById('adminNotifModal');
+            if (modal.classList.contains('active')) {
+                modal.classList.remove('active');
+            } else {
+                modal.classList.add('active');
+                loadAdminNotifications();
+            }
+        }
+
+        function closeAdminNotificationsModal() {
+            document.getElementById('adminNotifModal').classList.remove('active');
+        }
+
+        function loadAdminNotifications(silent = false) {
+            const listEl = document.getElementById('adminNotifList');
+            if (!silent && listEl) {
+                listEl.innerHTML = '<div style="text-align: center; padding: 20px;"><div class="skeleton" style="height: 60px; border-radius: 8px;"></div></div>';
+            }
+            fetch('/api/notifications', {
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(res => res.json())
+            .then(notifs => {
+                if (!Array.isArray(notifs)) notifs = [];
+                const unreadCount = notifs.filter(n => !n.isRead).length;
+                updateAdminNotifBadge(unreadCount);
+                if (listEl && !silent) {
+                    if (notifs.length === 0) {
+                        listEl.innerHTML = '<div style="text-align: center; padding: 30px; color: var(--text-secondary);"><i class="fa-solid fa-bell-slash" style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i>No system notifications</div>';
+                        return;
+                    }
+                    let html = '';
+                    notifs.forEach(n => {
+                        const timeStr = n.createdAt ? new Date(n.createdAt).toLocaleString() : 'Just now';
+                        const unreadStyle = n.isRead ? 'opacity: 0.75;' : 'border-left: 3px solid var(--accent-primary); background: rgba(99, 102, 241, 0.06);';
+                        const icon = n.isRead ? 'fa-envelope-open' : 'fa-envelope';
+                        html += `
+                            <div class="glass-panel" style="margin-bottom: 8px; padding: 12px 16px; ${unreadStyle} display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
+                                <div style="display: flex; gap: 12px; align-items: flex-start;">
+                                    <i class="fa-solid ${icon}" style="color: var(--accent-primary); margin-top: 3px;"></i>
+                                    <div>
+                                        <div style="font-size: 13.5px; font-weight: ${n.isRead ? '400' : '600'}; color: var(--text-primary); margin-bottom: 4px;">${n.message}</div>
+                                        <div style="font-size: 11px; color: var(--text-muted);">${timeStr}</div>
+                                    </div>
+                                </div>
+                                ${!n.isRead ? `<button class="btn-action btn-action-secondary" style="font-size: 11px; padding: 4px 8px; white-space: nowrap;" onclick="markAdminNotificationRead(${n.notificationId})"><i class="fa-solid fa-check"></i> Read</button>` : ''}
+                            </div>
+                        `;
+                    });
+                    listEl.innerHTML = html;
+                }
+            })
+            .catch(err => {
+                console.warn('Failed to load notifications:', err);
+                if (listEl && !silent) listEl.innerHTML = '<div style="text-align:center; padding: 20px; color: var(--danger);">Unable to connect to notification service</div>';
+            });
+        }
+
+        function markAdminNotificationRead(id) {
+            fetch(`/api/notifications/${id}/read`, {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(() => {
+                loadAdminNotifications();
+            });
+        }
+
+        function markAllAdminNotificationsRead() {
+            fetch('/api/notifications/read-all', {
+                method: 'PUT',
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(() => {
+                showToast('success', 'All notifications marked as read');
+                loadAdminNotifications();
+            });
+        }
+
+        // CSV Export Actions
+        function downloadAdminCsv(type) {
+            showToast('info', `Streaming Admin ${type.toUpperCase()} CSV report from database...`);
+            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            let filename = `admin_${type}_${dateStr}.csv`;
+
+            fetch(`/api/reports/csv/admin/${type}`, {
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Server returned HTTP ' + res.status);
+                const disposition = res.headers.get('Content-Disposition');
+                if (disposition && disposition.includes('filename=')) {
+                    const match = disposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) filename = match[1];
+                }
+                return res.blob();
+            })
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('success', `${filename} successfully exported from database!`);
+            })
+            .catch(err => {
+                console.error('Admin CSV export failed:', err);
+                showToast('danger', 'Failed to export CSV: ' + err.message);
+            });
+        }
+
+        function downloadManagerCsv(type) {
+            showToast('info', `Streaming Manager ${type.toUpperCase()} CSV report from database...`);
+            const dateStr = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+            let filename = `manager_${type}_${dateStr}.csv`;
+
+            fetch(`/api/reports/csv/manager/${type}`, {
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(res => {
+                if (!res.ok) throw new Error('Server returned HTTP ' + res.status);
+                const disposition = res.headers.get('Content-Disposition');
+                if (disposition && disposition.includes('filename=')) {
+                    const match = disposition.match(/filename="?([^"]+)"?/);
+                    if (match && match[1]) filename = match[1];
+                }
+                return res.blob();
+            })
+            .then(blob => {
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.setAttribute('download', filename);
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showToast('success', `${filename} successfully exported from database!`);
+            })
+            .catch(err => {
+                console.error('Manager CSV export failed:', err);
+                showToast('danger', 'Failed to export CSV: ' + err.message);
+            });
+        }
+        
+        // View Panel Switching
+        function switchView(viewName) {
+            document.querySelectorAll('.view-panel').forEach(v => v.style.display = 'none');
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            
+            const viewMap = {
+                dashboard: 'viewDashboard',
+                users: 'viewUsers',
+                suppliers: 'viewSuppliers',
+                products: 'viewProducts',
+                categories: 'viewCategories'
+            };
+            
+            document.getElementById(viewMap[viewName]).style.display = 'block';
+            document.getElementById('menu' + viewName.charAt(0).toUpperCase() + viewName.slice(1)).classList.add('active');
+            
+            if (viewName === 'users') {
+                loadUsers();
+            } else if (viewName === 'suppliers') {
+                loadSuppliers();
+            } else if (viewName === 'products') {
+                loadProducts();
+            } else if (viewName === 'categories') {
+                loadCategories();
+            } else if (viewName === 'dashboard') {
+                loadOverview();
+            }
+        }
+
+        // Initialize admin console page
+        window.addEventListener('load', () => {
+            // Load theme configuration
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            document.getElementById('themeIcon').className = savedTheme === 'dark' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+            
+            // Set header date
+            document.getElementById('currentDateStr').innerText = new Date().toLocaleDateString('en-US', {
+                weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+            });
+            
+            // Validate JWT session
+            userData = JSON.parse(localStorage.getItem('user'));
+            if (!userData || !userData.token) {
+                showToast('danger', 'Unauthorized access: session token missing');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+                return;
+            }
+            
+            if (userData.role !== 'ADMIN') {
+                window.location.href = 'user-dashboard.html';
+                return;
+            }
+            
+            // Render user details
+            document.getElementById('adminFullName').innerText = userData.fullName;
+            
+            loadOverview();
+            loadAdminNotifications(true);
+        });
+
+        // Load overview dashboard statistics
+        function loadOverview() {
+            fetch('/api/admin/dashboard', {
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const info = data.data;
+                    document.getElementById('statUsers').innerText = info.totalUsers;
+                    document.getElementById('statSuppliers').innerText = info.totalSuppliers;
+                    document.getElementById('statProducts').innerText = info.totalProducts;
+                    document.getElementById('statAdmins').innerText = info.totalAdmins;
+                    
+                    document.getElementById('dashboardContent').innerHTML = `
+                        <table class="glass-table" style="margin-top: 0;">
+                            <tr>
+                                <td><strong>Dashboard Connection Node:</strong></td>
+                                <td><span class="badge-role">${info.dashboardName}</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Database Connection Node:</strong></td>
+                                <td><span class="badge-active">Online</span></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Last Polled:</strong></td>
+                                <td>${new Date(info.lastPolled).toLocaleString()}</td>
+                            </tr>
+                        </table>
+                    `;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('danger', 'Error loading Overview stats');
+            });
+        }
+        
+        // Load System Users Directory
+        function loadUsers() {
+            const tableBody = document.getElementById('usersTableBody');
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align: center;"><div class="skeleton" style="height: 40px; border-radius: 4px;"></div></td></tr>`;
+            
+            fetch('/api/admin/users', {
+                headers: { 'Authorization': 'Bearer ' + userData.token }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let rowsHtml = '';
+                    data.data.forEach(user => {
+                        const badge = user.role === 'ADMIN' ? 'badge-admin' : 'badge-role';
+                        rowsHtml += `
+                            <tr>
+                                <td><strong>#${user.userId}</strong></td>
+                                <td>${user.fullName}</td>
+                                <td>${user.email}</td>
+                                <td>${user.phone}</td>
+                                <td><span class="${badge}">${user.role}</span></td>
+                            </tr>
+                        `;
+                    });
+                    tableBody.innerHTML = rowsHtml || `<tr><td colspan="5" style="text-align: center;">No users registered</td></tr>`;
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                showToast('danger', 'Error loading user directory');
+            });
+        }
+        
+        // CRUD: SUPPLIERS
+        function loadSuppliers() {
+            const tbody = document.getElementById('suppliersTableBody');
+            tbody.innerHTML = `<tr><td colspan="7" style="text-align: center;"><div class="skeleton" style="height: 40px; border-radius: 4px;"></div></td></tr>`;
+            
+            fetch('/api/suppliers')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let rowsHtml = '';
+                    data.data.forEach(sup => {
+                        rowsHtml += `
+                            <tr>
+                                <td><strong>#${sup.supplierId}</strong></td>
+                                <td>${sup.name}</td>
+                                <td>${sup.email}</td>
+                                <td>${sup.gstNumber}</td>
+                                <td><span class="badge-active">${sup.status}</span></td>
+                                <td>⭐ ${sup.rating || 5.0}</td>
+                                <td>
+                                    <button class="btn-primary-premium" style="width:auto; padding:6px 12px; font-size:11.5px; display:inline-flex;" onclick="editSupplier(${sup.supplierId})">Edit</button>
+                                    <button class="btn-logout" style="padding:4px 8px; font-size:11.5px;" onclick="deleteSupplier(${sup.supplierId})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = rowsHtml || `<tr><td colspan="7" style="text-align: center;">No suppliers registered</td></tr>`;
+                }
+            });
+        }
+        
+        function openSupplierModal() {
+            document.getElementById('supplierModalTitle').innerText = 'Add Supplier Profile';
+            document.getElementById('supplierSubmitBtnText').innerText = 'Save Supplier';
+            document.getElementById('supplierEditId').value = '';
+            document.getElementById('supName').value = '';
+            document.getElementById('supEmail').value = '';
+            document.getElementById('supPhone').value = '';
+            document.getElementById('supGst').value = '';
+            document.getElementById('supAddress').value = '';
+            document.getElementById('supStatus').value = 'ACTIVE';
+            
+            document.getElementById('supplierModal').classList.add('active');
+        }
+        
+        function closeSupplierModal() {
+            document.getElementById('supplierModal').classList.remove('active');
+        }
+        
+        function handleSupplierSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('supplierEditId').value;
+            const payload = {
+                name: document.getElementById('supName').value,
+                email: document.getElementById('supEmail').value,
+                phone: document.getElementById('supPhone').value,
+                gstNumber: document.getElementById('supGst').value,
+                address: document.getElementById('supAddress').value,
+                status: document.getElementById('supStatus').value,
+                rating: 5.0,
+                feedback: 'Excellent Node Connection'
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? '/api/suppliers/' + id : '/api/suppliers';
+            
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('success', 'Supplier profile successfully saved!');
+                    closeSupplierModal();
+                    loadSuppliers();
+                } else {
+                    showToast('danger', data.message || 'Error saving supplier');
+                }
+            });
+        }
+        
+        function editSupplier(id) {
+            fetch('/api/suppliers/' + id)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const sup = data.data;
+                    document.getElementById('supplierModalTitle').innerText = 'Edit Supplier Profile';
+                    document.getElementById('supplierSubmitBtnText').innerText = 'Update Supplier';
+                    document.getElementById('supplierEditId').value = sup.supplierId;
+                    document.getElementById('supName').value = sup.name;
+                    document.getElementById('supEmail').value = sup.email;
+                    document.getElementById('supPhone').value = sup.phone;
+                    document.getElementById('supGst').value = sup.gstNumber;
+                    document.getElementById('supAddress').value = sup.address;
+                    document.getElementById('supStatus').value = sup.status;
+                    
+                    document.getElementById('supplierModal').classList.add('active');
+                }
+            });
+        }
+        
+        function deleteSupplier(id) {
+            if (confirm('Delete supplier node?')) {
+                fetch('/api/suppliers/' + id, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', 'Supplier deleted');
+                        loadSuppliers();
+                    }
+                });
+            }
+        }
+        
+        // CRUD: PRODUCTS
+        function loadProducts() {
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = `<tr><td colspan="6" style="text-align: center;"><div class="skeleton" style="height: 40px; border-radius: 4px;"></div></td></tr>`;
+            
+            fetch('/api/products')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let rowsHtml = '';
+                    data.data.forEach(prod => {
+                        rowsHtml += `
+                            <tr>
+                                <td><strong>#${prod.productId}</strong></td>
+                                <td>${prod.name}</td>
+                                <td>₹${prod.pricePerProduct.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</td>
+                                <td>${prod.numberOfQuantities} units</td>
+                                <td><span class="badge-active">${prod.status}</span></td>
+                                <td>
+                                    <button class="btn-primary-premium" style="width:auto; padding:6px 12px; font-size:11.5px; display:inline-flex;" onclick="editProduct(${prod.productId})">Edit</button>
+                                    <button class="btn-logout" style="padding:4px 8px; font-size:11.5px;" onclick="deleteProduct(${prod.productId})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = rowsHtml || `<tr><td colspan="6" style="text-align: center;">No products registered</td></tr>`;
+                }
+            });
+        }
+        
+        function populateProductDropdowns() {
+            const catSelect = document.getElementById('prodCategory');
+            const deptSelect = document.getElementById('prodDept');
+            
+            fetch('/api/categories')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let opts = '';
+                    data.data.forEach(c => opts += `<option value="${c.categoryId}">${c.name}</option>`);
+                    catSelect.innerHTML = opts;
+                }
+            });
+            
+            fetch('/api/departments')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let opts = '';
+                    data.data.forEach(d => opts += `<option value="${d.departmentId}">${d.name}</option>`);
+                    deptSelect.innerHTML = opts;
+                }
+            });
+        }
+        
+        function openProductModal() {
+            populateProductDropdowns();
+            document.getElementById('productModalTitle').innerText = 'Add Product Catalog';
+            document.getElementById('productSubmitBtnText').innerText = 'Save Product';
+            document.getElementById('productEditId').value = '';
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodQty').value = '';
+            document.getElementById('prodDesc').value = '';
+            
+            document.getElementById('productModal').classList.add('active');
+        }
+        
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+        
+        function handleProductSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('productEditId').value;
+            const payload = {
+                name: document.getElementById('prodName').value,
+                pricePerProduct: parseFloat(document.getElementById('prodPrice').value),
+                numberOfQuantities: parseInt(document.getElementById('prodQty').value),
+                description: document.getElementById('prodDesc').value,
+                status: 'ACTIVE',
+                categoryId: parseInt(document.getElementById('prodCategory').value),
+                departmentId: parseInt(document.getElementById('prodDept').value),
+                userId: userData.userId // Administrator id
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? '/api/products/' + id : '/api/products';
+            
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('success', 'Product successfully registered in node catalog!');
+                    closeProductModal();
+                    loadProducts();
+                } else {
+                    showToast('danger', data.message || 'Error saving product');
+                }
+            });
+        }
+        
+        function editProduct(id) {
+            populateProductDropdowns();
+            fetch('/api/products/' + id)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const prod = data.data;
+                    document.getElementById('productModalTitle').innerText = 'Edit Product Catalog';
+                    document.getElementById('productSubmitBtnText').innerText = 'Update Product';
+                    document.getElementById('productEditId').value = prod.productId;
+                    document.getElementById('prodName').value = prod.name;
+                    document.getElementById('prodPrice').value = prod.pricePerProduct;
+                    document.getElementById('prodQty').value = prod.numberOfQuantities;
+                    document.getElementById('prodDesc').value = prod.description || '';
+                    
+                    setTimeout(() => {
+                        document.getElementById('prodCategory').value = prod.categoryId;
+                        document.getElementById('prodDept').value = prod.departmentId;
+                    }, 300);
+                    
+                    document.getElementById('productModal').classList.add('active');
+                }
+            });
+        }
+        
+        function deleteProduct(id) {
+            if (confirm('Delete product from catalog?')) {
+                fetch('/api/products/' + id, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', 'Product deleted');
+                        loadProducts();
+                    }
+                });
+            }
+        }
+        
+        // CRUD: CATEGORIES
+        function loadCategories() {
+            const tbody = document.getElementById('categoriesTableBody');
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;"><div class="skeleton" style="height: 40px; border-radius: 4px;"></div></td></tr>`;
+            
+            fetch('/api/categories')
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    let rowsHtml = '';
+                    data.data.forEach(cat => {
+                        rowsHtml += `
+                            <tr>
+                                <td><strong>#${cat.categoryId}</strong></td>
+                                <td>${cat.name}</td>
+                                <td>${cat.description || 'No description provided'}</td>
+                                <td>
+                                    <button class="btn-primary-premium" style="width:auto; padding:6px 12px; font-size:11.5px; display:inline-flex;" onclick="editCategory(${cat.categoryId})">Edit</button>
+                                    <button class="btn-logout" style="padding:4px 8px; font-size:11.5px;" onclick="deleteCategory(${cat.categoryId})">Delete</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                    tbody.innerHTML = rowsHtml || `<tr><td colspan="4" style="text-align: center;">No categories found</td></tr>`;
+                }
+            });
+        }
+        
+        function openCategoryModal() {
+            document.getElementById('categoryModalTitle').innerText = 'Add Category Node';
+            document.getElementById('categorySubmitBtnText').innerText = 'Save Category';
+            document.getElementById('categoryEditId').value = '';
+            document.getElementById('catName').value = '';
+            document.getElementById('catDesc').value = '';
+            
+            document.getElementById('categoryModal').classList.add('active');
+        }
+        
+        function closeCategoryModal() {
+            document.getElementById('categoryModal').classList.remove('active');
+        }
+        
+        function handleCategorySubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('categoryEditId').value;
+            const payload = {
+                name: document.getElementById('catName').value,
+                description: document.getElementById('catDesc').value
+            };
+            
+            const method = id ? 'PUT' : 'POST';
+            const url = id ? '/api/categories/' + id : '/api/categories';
+            
+            fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showToast('success', 'Category node successfully registered!');
+                    closeCategoryModal();
+                    loadCategories();
+                } else {
+                    showToast('danger', data.message || 'Error saving category');
+                }
+            });
+        }
+        
+        function editCategory(id) {
+            fetch('/api/categories/' + id)
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const cat = data.data;
+                    document.getElementById('categoryModalTitle').innerText = 'Edit Category Node';
+                    document.getElementById('categorySubmitBtnText').innerText = 'Update Category';
+                    document.getElementById('categoryEditId').value = cat.categoryId;
+                    document.getElementById('catName').value = cat.name;
+                    document.getElementById('catDesc').value = cat.description || '';
+                    
+                    document.getElementById('categoryModal').classList.add('active');
+                }
+            });
+        }
+        
+        function deleteCategory(id) {
+            if (confirm('Delete category node?')) {
+                fetch('/api/categories/' + id, { method: 'DELETE' })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        showToast('success', 'Category deleted');
+                        loadCategories();
+                    }
+                });
+            }
+        }
+        
+        function logout() {
+            localStorage.removeItem('user');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

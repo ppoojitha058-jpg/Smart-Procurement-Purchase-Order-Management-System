@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>EPS Enterprise Procurement System</title>
+    <script type="text/javascript">
+        if (localStorage.getItem('eps_user') && localStorage.getItem('eps_token')) {
+            window.location.replace("dashboard.html");
+        } else {
+            window.location.replace("login.html");
+        }
+    </script>
+</head>
+<body>
+    <p>Loading EPS Enterprise Procurement Workspace…</p>
+</body>
+</html>

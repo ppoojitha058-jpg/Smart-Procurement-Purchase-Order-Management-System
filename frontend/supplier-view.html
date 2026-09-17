@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html><head><meta charset="UTF-8"/><title>Opening Supplier Dashboard...</title></head>
+<body style="font-family:sans-serif;background:#0a0e1a;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh">
+<p id="msg">Logging in as supplier@eps.com ...</p>
+<script>
+fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:'supplier@eps.com',password:'Supplier@123'})})
+.then(r=>r.json()).then(res=>{
+  const user = res.data;
+  if(user && user.token){
+    localStorage.setItem('eps_user',JSON.stringify(user));
+    localStorage.setItem('eps_token',user.token);
+    document.getElementById('msg').textContent='Welcome '+user.fullName+'! Opening supplier portal...';
+    setTimeout(()=>{window.location.href='dashboard.html';},600);
+  }else{document.getElementById('msg').textContent='Login failed: '+(res.message||'unknown');}
+}).catch(e=>{document.getElementById('msg').textContent='Error: '+e;});
+</script>
+</body></html>

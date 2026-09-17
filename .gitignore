@@ -1,25 +1,30 @@
-# IDE
-.idea/
-.vscode/
-*.swp
-*.swo
-*~
-.DS_Store
-*.iml
-*.iws
-*.ipr
+# =============================================================================
+# Enterprise Procurement System — .gitignore
+# =============================================================================
 
-# Build
+# ----------------------------------------------------------------
+# SECRETS & LOCAL CONFIG — Never commit real credentials
+src/main/resources/application.properties
+backend/src/main/resources/application.properties
+**/application.properties
+!**/application.properties.example
+.env
+.env.local
+.env.*.local
+
+# ----------------------------------------------------------------
+# BUILD OUTPUT
+# ----------------------------------------------------------------
 target/
 build/
 *.class
 *.jar
 *.war
 *.ear
-*.zip
-*.tar.gz
 
-# Maven
+# ----------------------------------------------------------------
+# MAVEN
+# ----------------------------------------------------------------
 .m2/
 dependency-reduced-pom.xml
 pom.xml.tag
@@ -29,36 +34,82 @@ pom.xml.next
 release.properties
 release-pom.xml
 
-# Gradle
+# ----------------------------------------------------------------
+# GRADLE
+# ----------------------------------------------------------------
 .gradle/
 gradle/
 
-# Spring Boot
-*.log
-application-*.properties
-!application.properties
+# ----------------------------------------------------------------
+# IDE — IntelliJ IDEA
+# ----------------------------------------------------------------
+.idea/
+*.iml
+*.iws
+*.ipr
 
-# Environment
-.env
-.env.local
-.env.*.local
+# ----------------------------------------------------------------
+# IDE — VS Code
+# ----------------------------------------------------------------
+.vscode/
 
-# Database
-*.db
-*.sqlite
-*.h2.db
-
-# OS
-Thumbs.db
-.thumbs.db
-
-# Node (if used)
-node_modules/
-npm-debug.log
-yarn-error.log
-
-# Misc
+# ----------------------------------------------------------------
+# IDE — Eclipse
+# ----------------------------------------------------------------
 .classpath
 .project
 .settings/
 bin/
+
+# ----------------------------------------------------------------
+# LOGS
+# ----------------------------------------------------------------
+*.log
+app.log
+build.log
+run_output.log
+spring-boot.log
+spring-boot-error.log
+
+# ----------------------------------------------------------------
+# TEMPORARY / GENERATED BUILD ARTIFACTS
+# ----------------------------------------------------------------
+compile_out.txt
+compile_out2.txt
+run_out.txt
+port8080.txt
+restart-sanity.txt
+restart-test.txt
+
+# ----------------------------------------------------------------
+# MACHINE-SPECIFIC SCRIPTS
+# ----------------------------------------------------------------
+mvn.cmd
+
+# ----------------------------------------------------------------
+# TESTNG GENERATED REPORTS
+# ----------------------------------------------------------------
+test-output/
+
+# ----------------------------------------------------------------
+# ARCHIVES & COMPRESSED FILES
+# ----------------------------------------------------------------
+*.zip
+*.tar.gz
+
+# ----------------------------------------------------------------
+# OS GENERATED FILES
+# ----------------------------------------------------------------
+.DS_Store
+Thumbs.db
+.thumbs.db
+*~
+*.swp
+*.swo
+
+# ----------------------------------------------------------------
+# NODE (if frontend tooling is ever added)
+# ----------------------------------------------------------------
+node_modules/
+npm-debug.log
+yarn-error.log
