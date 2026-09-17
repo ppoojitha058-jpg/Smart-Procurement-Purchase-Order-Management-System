@@ -458,6 +458,3 @@ Import `postman/Enterprise-Procurement-System.postman_collection.json` into Post
 
 ---
 
-## 18. License
-
-This project is developed for enterprise procurement management and is available for internal evaluation and commercial use. All rights reserved.
